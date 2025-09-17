@@ -1,5 +1,8 @@
+# -------------------------
+# Global / Common variables
+# -------------------------
 variable "aws_region" {
-  description = "AWS region"
+  description = "AWS region to deploy into"
   type        = string
 }
 
@@ -9,116 +12,255 @@ variable "project_name" {
 }
 
 variable "environment" {
-  description = "Environment name"
+  description = "Deployment environment (e.g. dev, staging, prod)"
   type        = string
 }
 
 variable "app_name" {
-  description = "Application name"
+  description = "Application name (used for tagging/naming)"
   type        = string
 }
 
+# -------------------------
+# Networking / VPC
+# -------------------------
 variable "vpc_cidr" {
-  description = "CIDR block for VPC"
+  description = "CIDR block for the VPC"
   type        = string
 }
 
-variable "domain_name" {
-  description = "Domain name for the application"
-  type        = string
+variable "public_subnets" {
+  description = "List of CIDRs for public subnets"
+  type        = list(string)
 }
 
-variable "route53_zone_id" {
-  description = "Route 53 hosted zone ID"
-  type        = string
+variable "private_subnets" {
+  description = "List of CIDRs for private subnets"
+  type        = list(string)
 }
 
+variable "azs" {
+  description = "List of availability zones for subnets"
+  type        = list(string)
+}
+
+# -------------------------
+# EC2
+# -------------------------
 variable "key_pair_name" {
-  description = "EC2 Key Pair name"
+  description = "Existing AWS key pair name for EC2 access"
+  type        = string
+}
+
+# -------------------------
+# RDS
+# -------------------------
+variable "db_name" {
+  description = "Database name"
+  type        = string
+}
+
+variable "db_username" {
+  description = "Master database username"
   type        = string
 }
 
 variable "db_password" {
-  description = "RDS database password"
+  description = "Master database password"
   type        = string
   sensitive   = true
 }
 
-# ALB Configuration Variables (from your existing pattern)
+variable "db_instance_class" {
+  description = "RDS instance type"
+  type        = string
+}
+
+variable "db_engine" {
+  description = "Database engine (e.g. postgres, mysql)"
+  type        = string
+}
+
+variable "db_engine_version" {
+  description = "Database engine version"
+  type        = string
+}
+
+variable "db_allocated_storage" {
+  description = "Initial allocated storage in GB"
+  type        = number
+}
+
+# -------------------------
+# ACM / Route53
+# -------------------------
+variable "domain_name" {
+  description = "Domain name for ACM/Route53"
+  type        = string
+}
+
+variable "route53_zone_id" {
+  description = "Route53 hosted zone ID"
+  type        = string
+}
+
+# -------------------------
+# ALB
+# -------------------------
 variable "internal" {
-  description = "Whether the load balancer is internal"
+  description = "Whether the ALB is internal (true) or internet-facing (false)"
   type        = bool
 }
 
 variable "enable_deletion_protection" {
-  description = "Enable deletion protection for ALB"
+  description = "Enable deletion protection for the ALB"
   type        = bool
 }
 
 variable "load_balancer_name" {
-  description = "Name of the load balancer"
+  description = "Name for the ALB"
   type        = string
 }
 
 variable "port" {
-  description = "List of ports for the ALB"
-  type        = list(number)
+  description = "Port to use for the target group registration"
+  type        = number
 }
 
-# Target Group Configuration
 variable "target_group_protocol" {
-  description = "Protocol for target group"
+  description = "Protocol for the target group (HTTP or HTTPS)"
   type        = string
 }
 
 variable "target_type" {
-  description = "Type of target (instance, ip, lambda)"
+  description = "Target type for the target group (instance or ip)"
   type        = string
 }
 
 variable "target_group_port" {
-  description = "Port for target group"
+  description = "Port the target group listens on"
   type        = number
 }
 
-# Health Check Configuration
 variable "health_check_path" {
-  description = "Health check path"
+  description = "Path for ALB health checks"
   type        = string
 }
 
 variable "health_check_protocol" {
-  description = "Health check protocol"
+  description = "Protocol for ALB health checks"
   type        = string
 }
 
 variable "health_check_interval" {
-  description = "Health check interval in seconds"
+  description = "Interval for ALB health checks (seconds)"
   type        = number
 }
 
 variable "health_check_timeout" {
-  description = "Health check timeout in seconds"
+  description = "Timeout for ALB health checks (seconds)"
   type        = number
 }
 
 variable "health_check_healthy_threshold" {
-  description = "Number of consecutive health checks before considering target healthy"
+  description = "Number of consecutive successes to mark target healthy"
   type        = number
 }
 
 variable "health_check_unhealthy_threshold" {
-  description = "Number of consecutive health checks before considering target unhealthy"
+  description = "Number of consecutive failures to mark target unhealthy"
   type        = number
 }
 
-# Listener Configuration
 variable "listener_port" {
-  description = "Port for the listener"
+  description = "Port for the ALB listener"
   type        = number
 }
 
 variable "listener_protocol" {
-  description = "Protocol for the listener"
+  description = "Protocol for the ALB listener"
   type        = string
+}
+variable "bucket_name" {
+  type = string
+}
+
+variable "bucket_acl" {
+  type    = string
+  default = "private"
+}
+
+variable "force_destroy" {
+  type    = bool
+  default = false
+}
+
+variable "versioning" {
+  type    = bool
+  default = false
+}
+
+variable "website_enabled" {
+  type    = bool
+  default = false
+}
+
+variable "website_index_document" {
+  type    = string
+  default = "index.html"
+}
+
+variable "website_error_document" {
+  type    = string
+  default = "error.html"
+}
+
+variable "acm_certificate_arn" {
+  type    = string
+  default = ""
+}
+
+variable "aliases" {
+  type    = list(string)
+  default = []
+}
+
+variable "default_ttl" {
+  type    = number
+  default = 3600
+}
+
+variable "max_ttl" {
+  type    = number
+  default = 86400
+}
+
+variable "comment" {
+  type    = string
+  default = "CloudFront for S3"
+}
+
+variable "tags" {
+  type    = map(string)
+  default = {}
+}
+
+variable "block_public_acls" {
+  type    = bool
+  default = true
+}
+
+variable "block_public_policy" {
+  type    = bool
+  default = true
+}
+
+variable "ignore_public_acls" {
+  type    = bool
+  default = true
+}
+
+variable "restrict_public_buckets" {
+  type    = bool
+  default = true
 }
