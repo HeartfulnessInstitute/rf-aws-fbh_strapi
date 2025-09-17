@@ -1,8 +1,0 @@
-aws_region      = "ap-south-1"
-project_name    = "fbh-strapi"
-environment     = "staging"
-vpc_cidr        = "10.0.0.0/16"
-domain_name     = "fbh-staging.yourdomain.com"
-route53_zone_id = "Z123456ABCDEFG"
-key_pair_name   = "fbh_staging_strapi_key_pair"
-db_password     = "your-secure-password"
