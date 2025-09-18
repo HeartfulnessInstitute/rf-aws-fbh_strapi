@@ -47,3 +47,50 @@ health_check_healthy_threshold   = 3
 health_check_unhealthy_threshold = 3
 listener_port              = 443
 listener_protocol          = "HTTPS"
+# Amplify Configuration for Next.js
+amplify_repository_url = "https://github.com/your-org/fbh-frontend"
+amplify_framework      = "Next.js - SSG"
+amplify_platform       = "WEB_COMPUTE"
+amplify_domain_name    = "app.dev.fbh.heartfulness.org"
+
+amplify_environment_variables = {
+  NEXT_PUBLIC_STRAPI_URL    = "https://dev.fbh.heartfulness.org"
+  NEXT_PUBLIC_API_URL       = "https://dev.fbh.heartfulness.org/api"
+  NEXT_PUBLIC_HFN_CLIENT_ID = "e843d6b2-8f97-48bd-93c2-e7dcddc10448"
+  NEXT_PUBLIC_ENV           = "dev"
+}
+
+amplify_branches = {
+  main = {
+    environment_variables = {
+      NEXT_PUBLIC_BRANCH = "main"
+    }
+    framework                  = "Next.js - SSG"
+    enable_auto_build         = true
+    enable_pull_request_preview = true
+  }
+  develop = {
+    environment_variables = {
+      NEXT_PUBLIC_BRANCH = "develop"
+    }
+    framework                  = "Next.js - SSG"
+    enable_auto_build         = true
+    enable_pull_request_preview = false
+  }
+}
+
+amplify_sub_domains = [
+  {
+    branch_name = "main"
+    prefix      = ""
+  },
+  {
+    branch_name = "develop"
+    prefix      = "dev"
+  }
+]
+
+amplify_create_webhook      = true
+amplify_webhook_branch_name = "main"
+
+amplify_build_spec = "version: 1\nfrontend:\n  phases:\n    preBuild:\n      commands:\n        - npm ci\n    build:\n      commands:\n        - npm run build\n        - npm run export\n  artifacts:\n    baseDirectory: out\n    files:\n      - '**/*'\n  cache:\n    paths:\n      - node_modules/**/*\n      - .next/cache/**/*"

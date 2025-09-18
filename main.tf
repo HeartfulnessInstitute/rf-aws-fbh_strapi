@@ -112,7 +112,33 @@ module "alb" {
   
   tags = local.common_tags
 }
+module "amplify" {
+  source = "./modules/aws-amplify"
 
+  app_name        = "${var.project_name}-${var.environment}-frontend"
+  repository_url  = var.amplify_repository_url
+  project_name    = var.project_name
+  environment     = var.environment
+
+  build_spec = var.amplify_build_spec
+  framework  = var.amplify_framework
+  platform   = var.amplify_platform
+
+  environment_variables = merge(var.amplify_environment_variables, {
+    NEXT_PUBLIC_STRAPI_URL = "https://${var.domain_name}"
+    NEXT_PUBLIC_API_URL    = "https://${var.domain_name}/api"
+    NEXT_PUBLIC_ENV        = var.environment
+  })
+
+  branches = var.amplify_branches
+  domain_name = var.amplify_domain_name
+  sub_domains = var.amplify_sub_domains
+  custom_rules = var.amplify_custom_rules
+  create_webhook = var.amplify_create_webhook
+  webhook_branch_name = var.amplify_webhook_branch_name
+
+  tags = local.common_tags
+}
 # Common tags
 locals {
   common_tags = {
@@ -122,3 +148,4 @@ locals {
     ManagedBy   = "Terraform"
   }
 }
+

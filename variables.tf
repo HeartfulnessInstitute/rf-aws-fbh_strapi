@@ -264,3 +264,96 @@ variable "restrict_public_buckets" {
   type    = bool
   default = true
 }
+variable "amplify_repository_url" {
+  description = "Git repository URL for Amplify app"
+  type        = string
+  default     = ""
+}
+
+variable "amplify_build_spec" {
+  description = "Build specification for Amplify"
+  type        = string
+  default     = ""
+}
+
+variable "amplify_framework" {
+  description = "Frontend framework"
+  type        = string
+  default     = "Next.js - SSG"
+}
+
+variable "amplify_platform" {
+  description = "Amplify platform type"
+  type        = string
+  default     = "WEB_COMPUTE"
+}
+
+variable "amplify_environment_variables" {
+  description = "Environment variables for Amplify app"
+  type        = map(string)
+  default     = {}
+}
+
+variable "amplify_branches" {
+  description = "Amplify branches configuration"
+  type = map(object({
+    environment_variables       = map(string)
+    framework                  = string
+    enable_auto_build         = bool
+    enable_pull_request_preview = bool
+  }))
+  default = {}
+}
+
+variable "amplify_domain_name" {
+  description = "Custom domain for Amplify app"
+  type        = string
+  default     = ""
+}
+
+variable "amplify_sub_domains" {
+  description = "Sub domains for Amplify"
+  type = list(object({
+    branch_name = string
+    prefix      = string
+  }))
+  default = []
+}
+
+variable "amplify_custom_rules" {
+  description = "Custom rules for Amplify routing (Next.js specific)"
+  type = list(object({
+    source = string
+    status = string
+    target = string
+  }))
+  default = [
+    {
+      source = "/_next/static/*"
+      status = "200"
+      target = "/_next/static/*"
+    },
+    {
+      source = "/api/*"
+      status = "200"
+      target = "/api/*"
+    },
+    {
+      source = "/<*>"
+      status = "404-200"
+      target = "/index.html"
+    }
+  ]
+}
+
+variable "amplify_create_webhook" {
+  description = "Create webhook for Amplify"
+  type        = bool
+  default     = false
+}
+
+variable "amplify_webhook_branch_name" {
+  description = "Branch name for Amplify webhook"
+  type        = string
+  default     = "main"
+}
