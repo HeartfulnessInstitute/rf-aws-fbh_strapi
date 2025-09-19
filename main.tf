@@ -139,6 +139,20 @@ module "amplify" {
 
   tags = local.common_tags
 }
+module "cdn" {
+  source = "./modules/cdn"
+
+  bucket_name                = module.s3.bucket_name
+  bucket_id                  = module.s3.bucket_id
+  bucket_arn                 = module.s3.bucket_arn
+  bucket_regional_domain_name = module.s3.bucket_regional_domain_name
+  
+  acm_certificate_arn = var.cloudfront_acm_certificate_arn
+  aliases             = var.cloudfront_aliases
+  comment             = "CDN for ${var.project_name} ${var.environment}"
+  
+  tags = local.common_tags
+}
 # Common tags
 locals {
   common_tags = {

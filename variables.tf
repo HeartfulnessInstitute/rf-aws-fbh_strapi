@@ -357,3 +357,14 @@ variable "amplify_webhook_branch_name" {
   type        = string
   default     = "main"
 }
+variable "cloudfront_acm_certificate_arn" {
+  description = "ACM certificate ARN for CloudFront custom domain"
+  type        = string
+  default     = ""
+}
+
+variable "cloudfront_aliases" {
+  description = "Custom domain aliases for CloudFront"
+  type        = list(string)
+  default     = []
+}

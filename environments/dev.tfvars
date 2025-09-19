@@ -94,3 +94,6 @@ amplify_create_webhook      = true
 amplify_webhook_branch_name = "main"
 
 amplify_build_spec = "version: 1\nfrontend:\n  phases:\n    preBuild:\n      commands:\n        - npm ci\n    build:\n      commands:\n        - npm run build\n        - npm run export\n  artifacts:\n    baseDirectory: out\n    files:\n      - '**/*'\n  cache:\n    paths:\n      - node_modules/**/*\n      - .next/cache/**/*"
+# CloudFront Configuration
+cloudfront_aliases = ["cdn.dev.fbh.heartfulness.org"]
+# cloudfront_acm_certificate_arn = "arn:aws:acm:us-east-1:xxx:certificate/xxx" # Must be in us-east-1 for CloudFront
