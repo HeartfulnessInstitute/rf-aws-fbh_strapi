@@ -97,3 +97,5 @@ amplify_build_spec = "version: 1\nfrontend:\n  phases:\n    preBuild:\n      com
 # CloudFront Configuration
 cloudfront_aliases = ["cdn.dev.fbh.heartfulness.org"]
 # cloudfront_acm_certificate_arn = "arn:aws:acm:us-east-1:xxx:certificate/xxx" # Must be in us-east-1 for CloudFront
+api_gateway_stage_name     = "v1"
+api_gateway_custom_domain  = "api.dev.fbh.heartfulness.org"

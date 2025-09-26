@@ -153,6 +153,21 @@ module "cdn" {
   
   tags = local.common_tags
 }
+module "api_gateway" {
+  source = "./modules/api-gateway"
+
+  api_name            = "${var.project_name}-${var.environment}-api"
+  description         = "API Gateway for ${var.project_name} ${var.environment}"
+  stage_name          = var.api_gateway_stage_name
+  alb_dns_name        = module.alb.alb_dns_name
+  custom_domain_name  = var.api_gateway_custom_domain
+  certificate_arn     = var.api_gateway_certificate_arn
+  route53_zone_id     = var.route53_zone_id
+  project_name        = var.project_name
+  environment         = var.environment
+
+  tags = local.common_tags
+}
 # Common tags
 locals {
   common_tags = {

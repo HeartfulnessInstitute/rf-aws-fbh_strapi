@@ -368,3 +368,20 @@ variable "cloudfront_aliases" {
   type        = list(string)
   default     = []
 }
+variable "api_gateway_stage_name" {
+  description = "API Gateway stage name"
+  type        = string
+  default     = "api"
+}
+
+variable "api_gateway_custom_domain" {
+  description = "Custom domain for API Gateway"
+  type        = string
+  default     = ""
+}
+
+variable "api_gateway_certificate_arn" {
+  description = "ACM certificate ARN for API Gateway custom domain"
+  type        = string
+  default     = ""
+}
