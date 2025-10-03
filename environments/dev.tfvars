@@ -29,6 +29,7 @@ db_allocated_storage = 20
 
 # ACM / Route53
 #domain_name     = "fbh.dev.heartfulness.org"
+domain_name = ""
 certificate_arn = "arn:aws:acm:us-east-1:502390415551:certificate/d6f45361-48f1-4256-aea6-cae4c8804796"
 
 # ALB
@@ -52,7 +53,7 @@ repository_url = "https://github.com/bugcurefrontend/fbh-frontend"
 amplify_framework      = "Next.js - SSG"
 amplify_platform       = "WEB_COMPUTE"
 amplify_domain_name    = "fbh.dev.heartfulness.org"
-
+amplify_access_token = ""
 amplify_environment_variables = {
   NEXT_PUBLIC_STRAPI_URL    = "https://fbh.dev.heartfulness.org"
   NEXT_PUBLIC_API_URL       = "https://fbh.dev.heartfulness.org/api"
@@ -97,4 +98,9 @@ amplify_build_spec = "version: 1\nfrontend:\n  phases:\n    preBuild:\n      com
 # CloudFront Configuration
 cloudfront_aliases = ["cdn.fbh.dev.heartfulness.org"]
 # cloudfront_acm_certificate_arn = "arn:aws:acm:us-east-1:xxx:certificate/xxx" # Must be in us-east-1 for CloudFront
-
+# API Gateway Configuration
+api_gateway_stage_name      = "v1"
+api_gateway_custom_domain   = "" #"fbh.dev.heartfulness.org", in doubt
+api_gateway_certificate_arn = "arn:aws:acm:us-east-1:502390415551:certificate/d6f45361-48f1-4256-aea6-cae4c8804796"
+api_gateway_log_retention   = 7
+api_gateway_enable_logs     = false

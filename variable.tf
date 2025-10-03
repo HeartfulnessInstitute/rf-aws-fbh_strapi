@@ -41,6 +41,7 @@ variable "key_name" {
 variable "domain_name" {
   description = "Custom domain name for CloudFront (optional)"
   type        = string
+  default     = ""
 
 }
 
@@ -137,4 +138,41 @@ variable "oauth_token" {
   type        = string
   sensitive   = true
   default     = ""
+}
+variable "amplify_access_token" {
+  description = "GitHub personal access token for Amplify"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+# API Gateway Variables
+variable "api_gateway_stage_name" {
+  description = "API Gateway stage name"
+  type        = string
+  default     = "v1"
+}
+
+variable "api_gateway_custom_domain" {
+  description = "Custom domain for API Gateway"
+  type        = string
+  default     = ""
+}
+
+variable "api_gateway_certificate_arn" {
+  description = "ACM certificate ARN for API Gateway custom domain"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "api_gateway_log_retention" {
+  description = "CloudWatch log retention for API Gateway in days"
+  type        = number
+  default     = 7
+}
+
+variable "api_gateway_enable_logs" {
+  description = "Enable detailed API Gateway logging"
+  type        = bool
+  default     = true
 }

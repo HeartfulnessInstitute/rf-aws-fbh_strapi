@@ -80,3 +80,30 @@ output "custom_domain_url" {
   value       = var.domain_name != "" ? "https://${var.domain_name}" : ""
 }
 
+# API Gateway Outputs
+output "api_gateway_id" {
+  description = "API Gateway REST API ID"
+  value       = module.api_gateway.rest_api_id
+}
+
+output "api_gateway_invoke_url" {
+  description = "Default API Gateway invoke URL"
+  value       = module.api_gateway.invoke_url
+}
+
+output "api_gateway_endpoint" {
+  description = "API Gateway endpoint (custom domain if configured, otherwise default)"
+  value       = module.api_gateway.api_endpoint
+  sensitive   = true
+}
+
+output "api_gateway_custom_domain" {
+  description = "API Gateway custom domain name"
+  value       = module.api_gateway.custom_domain_name
+  sensitive   = true
+}
+output "api_gateway_custom_domain_target" {
+  description = "Target domain for DNS record (use this in Route53)"
+  value       = module.api_gateway.custom_domain_cloudfront_domain_name
+  sensitive   = true
+}

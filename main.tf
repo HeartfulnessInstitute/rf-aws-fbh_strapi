@@ -127,7 +127,7 @@ resource "aws_amplify_app" "main" {
   name       = var.app_name
   repository = var.repository_url
   platform   = var.platform
-  access_token = (var.repository_url != "" && var.access_token != "") ? var.access_token : null
+ access_token = (var.repository_url != "" && var.amplify_access_token != "") ? var.amplify_access_token : null
   oauth_token  = (var.repository_url != "" && var.oauth_token  != "") ? var.oauth_token  : null
 
   # Optional framework
@@ -178,7 +178,29 @@ resource "aws_amplify_webhook" "branch_webhook" {
   app_id      = aws_amplify_app.main.id
   branch_name = var.webhook_branch_name
 }
-
+# API Gateway Module
+module "api_gateway" {
+  source = "./modules/api-gateway"
+  
+  project_name = var.project_name
+  environment  = var.environment
+  
+  # ALB integration
+  alb_dns_name = module.alb.alb_dns_name
+  
+  # Stage configuration
+  stage_name = var.api_gateway_stage_name
+  
+  # Custom domain (leave empty until you have certificate ARN)
+  domain_name     = var.api_gateway_custom_domain
+  certificate_arn = var.api_gateway_certificate_arn
+  
+  # Logging
+  log_retention_days = var.api_gateway_log_retention
+  enable_api_logs    = var.api_gateway_enable_logs
+  
+  depends_on = [module.alb]
+}
 # Domain association (optional)
 locals {
   branch_prefix_list = flatten([
