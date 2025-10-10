@@ -28,8 +28,8 @@ db_engine_version    = "8.0"
 db_allocated_storage = 20
 
 # ACM / Route53
-#domain_name     = "fbh.dev.heartfulness.org"
-domain_name = ""
+domain_name     = "fbh.dev.heartfulness.org"
+
 certificate_arn = "arn:aws:acm:us-east-1:502390415551:certificate/d6f45361-48f1-4256-aea6-cae4c8804796"
 
 # ALB
@@ -58,7 +58,7 @@ amplify_environment_variables = {
   NEXT_PUBLIC_STRAPI_URL    = "https://fbh.dev.heartfulness.org"
   NEXT_PUBLIC_API_URL       = "https://fbh.dev.heartfulness.org/api"
   NEXT_PUBLIC_HFN_CLIENT_ID = "e843d6b2-8f97-48bd-93c2-e7dcddc10448"
-  NEXT_PUBLIC_ENV           = "dev"
+  NEXT_PUBLIC_ENV           = "main"
 }
 
 amplify_branches = {
@@ -83,7 +83,7 @@ amplify_branches = {
 amplify_sub_domains = [
   {
     branch_name = "main"
-    prefix      = ""
+    prefix      = "main"
   },
   {
     branch_name = "develop"
@@ -97,10 +97,10 @@ amplify_webhook_branch_name = "main"
 amplify_build_spec = "version: 1\nfrontend:\n  phases:\n    preBuild:\n      commands:\n        - npm ci\n    build:\n      commands:\n        - npm run build\n        - npm run export\n  artifacts:\n    baseDirectory: out\n    files:\n      - '**/*'\n  cache:\n    paths:\n      - node_modules/**/*\n      - .next/cache/**/*"
 # CloudFront Configuration
 cloudfront_aliases = ["cdn.fbh.dev.heartfulness.org"]
-# cloudfront_acm_certificate_arn = "arn:aws:acm:us-east-1:xxx:certificate/xxx" # Must be in us-east-1 for CloudFront
+
 # API Gateway Configuration
 api_gateway_stage_name      = "v1"
-api_gateway_custom_domain   = "" #"fbh.dev.heartfulness.org", in doubt
-api_gateway_certificate_arn = "arn:aws:acm:us-east-1:502390415551:certificate/d6f45361-48f1-4256-aea6-cae4c8804796"
+api_gateway_custom_domain   = "fbh.dev.heartfulness.org"
+api_gateway_certificate_arn = "arn:aws:acm:ap-south-1:502390415551:certificate/912617f2-6890-4d84-a093-7e2e591b5e7b"
 api_gateway_log_retention   = 7
 api_gateway_enable_logs     = false
