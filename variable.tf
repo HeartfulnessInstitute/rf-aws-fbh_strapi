@@ -130,7 +130,6 @@ variable "access_token" {
   description = "Personal access token for GitHub (classic PAT). Do NOT store in VCS; use env/CI secrets."
   type        = string
   sensitive   = true
-  default     = ""
 }
 
 variable "oauth_token" {
@@ -143,7 +142,6 @@ variable "amplify_access_token" {
   description = "GitHub personal access token for Amplify"
   type        = string
   sensitive   = true
-  default     = ""
 }
 # API Gateway Variables
 variable "api_gateway_stage_name" {
