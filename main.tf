@@ -219,17 +219,4 @@ locals {
   ]
 }
 
-resource "aws_amplify_domain_association" "domain_assoc" {
-  count       = var.domain_name != "" ? 1 : 0
-  app_id      = aws_amplify_app.main.id
-  domain_name = var.domain_name
-
-  dynamic "sub_domain" {
-    for_each = local.branch_prefix_list_safe
-    content {
-      branch_name = sub_domain.value.branch
-      prefix      = sub_domain.value.prefix
-    }
-  }
-}
 
