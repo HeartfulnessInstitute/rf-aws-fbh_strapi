@@ -62,77 +62,6 @@ module "rds" {
 
   tags = merge(var.tags, { Project = "heartfulness" })
 }
-# -------------------------
-# EC2 security group
-# -------------------------
-resource "aws_security_group" "ec2_sg" {
-  name        = "${var.name_prefix}-ec2-sg"
-  description = "Security group for EC2 app server"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    description = "Allow SSH from admin CIDRs"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = var.ec2_allowed_ssh_cidrs
-  }
-
-  ingress {
-    description = "Allow HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    description = "Allow all outbound"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = merge(var.tags, { Name = "${var.name_prefix}-ec2-sg" })
-}
-
-# -------------------------
-# Allow EC2 SG -> DB SG (security-group based ingress)
-# -------------------------
-resource "aws_security_group_rule" "allow_ec2_to_db" {
-  type                     = "ingress"
-  from_port                = var.db_port
-  to_port                  = var.db_port
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.db_sg.id     # the DB SG created earlier
-  source_security_group_id = aws_security_group.ec2_sg.id    # allow traffic from EC2 SG
-  description              = "Allow EC2 app servers to reach the DB"
-}
-
-# -------------------------
-# Normalize public subnet ids (works if module.vpc returns list or map)
-# -------------------------
-locals {
-  ec2_public_subnet_ids = try(values(module.vpc.public_subnet_ids), module.vpc.public_subnet_ids)
-}
-
-# -------------------------
-# EC2 instance
-# -------------------------
-resource "aws_instance" "app_server" {
-  ami                    = var.ec2_ami
-  instance_type          = var.ec2_instance_type
-  subnet_id              = local.ec2_public_subnet_ids[0]
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-  key_name               = var.ec2_key_name
-
-  associate_public_ip_address = false
-
-  tags = merge(var.tags, {
-    Name = "${var.name_prefix}-ec2"
-  })
-}
 # CloudFront Module
 module "cloudfront" {
   source = "git::https://github.com/HeartfulnessInstitute/tf-aws-cloudfront.git?ref=feature"
@@ -156,53 +85,37 @@ module "cloudfront" {
   max_ttl                = var.max_ttl
   min_ttl                = var.min_ttl
 }
-#Amplify#
-resource "aws_amplify_app" "main" {
-  name       = var.app_name
-  repository = var.repository_url
-  platform   = var.platform
- access_token = (var.repository_url != "" && var.amplify_access_token != "") ? var.amplify_access_token : null
-  oauth_token  = (var.repository_url != "" && var.oauth_token  != "") ? var.oauth_token  : null
+module "amplify_app" {
+  source = "git::https://github.com/HeartfulnessInstitute/tf-aws-amplify.git?ref=feature"
 
-  # Optional framework
-  dynamic "auto_branch_creation_config" {
-    for_each = var.framework != "" ? [1] : []
-    content {
-      framework = var.framework
-    }
+  app_name        = var.app_name
+  app_description = "Amplify application deployed with Terraform"
+  repository_url  = var.repository_url
+  github_token    = ""   #amplify github token
+  platform        = "WEB"
+  environment     = var.environment
+  main_branch_name = "main"
+  framework       = var.framework
+  branch_stage    = var.branch_stage
+
+  enable_auto_branch_creation = false
+  enable_branch_auto_build    = true
+  enable_basic_auth           = false
+
+  environment_variables = {
+    REACT_APP_API_URL = var.react_app_api_url
+    REACT_APP_ENV     = var.environment
   }
 
-  environment_variables = var.environment_variables
+  branch_environment_variables = {}
 
-  dynamic "custom_rule" {
-    for_each = var.custom_rules
-    content {
-      source = custom_rule.value.source
-      status = custom_rule.value.status
-      target = custom_rule.value.target
-    }
-  }
+  domain_name   = var.domain_name
+  domain_prefix = var.domain_prefix
 
   tags = {
     Project     = var.project_name
     Environment = var.environment
-  }
-}
-
-# Branches
-resource "aws_amplify_branch" "branches" {
-  for_each = var.branches
-
-  app_id            = aws_amplify_app.main.id
-  branch_name       = each.key
-  enable_auto_build = lookup(each.value, "enable_auto_build", true)
-
-  environment_variables = lookup(each.value, "environment_variables", {})
-
-  tags = {
-    Project     = var.project_name
-    Environment = var.environment
-    Branch      = each.key
+    ManagedBy   = "Terraform"
   }
 }
 # API Gateway Module
