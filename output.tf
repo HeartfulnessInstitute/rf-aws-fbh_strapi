@@ -111,37 +111,57 @@ output "origin_access_control_id" {
   value       = try(module.cloudfront.origin_access_control_id, null)
 }
 
+
+# ALB outputs (from the alb module)
+output "alb_arn" {
+  value       = try(module.alb.alb_arn, "")
+  description = "ARN of the ALB created by the alb module"
+}
+
+output "alb_dns_name" {
+  value       = try(module.alb.alb_dns_name, "")
+  description = "DNS name of the ALB"
+}
+
+output "alb_security_group_id" {
+  value       = try(module.alb.alb_security_group_id, "")
+  description = "Security group id of the ALB"
+}
+
+output "target_group_arn" {
+  value       = try(module.alb.target_group_arn, "")
+  description = "Target group ARN created by the ALB module"
+}
+
 #Amplify#
-output "app_id" {
+output "amplify_app_id" {
   description = "Amplify App ID"
-  value       = aws_amplify_app.main.id
+  value       = module.amplify_app.app_id
 }
 
-output "app_arn" {
+output "amplify_app_arn" {
   description = "Amplify App ARN"
-  value       = aws_amplify_app.main.arn
+  value       = module.amplify_app.app_arn
 }
 
-output "default_domain" {
-  description = "Default domain for the Amplify app"
-  value       = aws_amplify_app.main.default_domain
+output "amplify_default_domain" {
+  description = "Default Amplify domain"
+  value       = module.amplify_app.default_domain
 }
 
-output "app_url" {
-  description = "URL of the Amplify app"
-  value       = "https://${aws_amplify_app.main.default_domain}"
+output "amplify_app_url" {
+  description = "Amplify application URL"
+  value       = module.amplify_app.app_url
 }
 
-output "branch_urls" {
-  description = "URLs for each branch"
-  value = {
-    for k, v in aws_amplify_branch.branches : k => "https://${k}.${aws_amplify_app.main.default_domain}"
-  }
+output "amplify_custom_domain" {
+  description = "Custom domain (if configured)"
+  value       = module.amplify_app.custom_domain
 }
 
-output "custom_domain_url" {
-  description = "Custom domain URL (if configured)"
-  value       = var.domain_name != "" ? "https://${var.domain_name}" : ""
+output "amplify_iam_role_arn" {
+  description = "IAM role ARN for Amplify service"
+  value       = module.amplify_app.iam_role_arn
 }
 # API Gateway Outputs
 output "api_gateway_id" {
@@ -169,24 +189,4 @@ output "api_gateway_custom_domain_target" {
   description = "Target domain for DNS record (use this in Route53)"
   value       = module.api_gateway.custom_domain_cloudfront_domain_name
   sensitive   = true
-}
-# ALB outputs (from the alb module)
-output "alb_arn" {
-  value       = try(module.alb.alb_arn, "")
-  description = "ARN of the ALB created by the alb module"
-}
-
-output "alb_dns_name" {
-  value       = try(module.alb.alb_dns_name, "")
-  description = "DNS name of the ALB"
-}
-
-output "alb_security_group_id" {
-  value       = try(module.alb.alb_security_group_id, "")
-  description = "Security group id of the ALB"
-}
-
-output "target_group_arn" {
-  value       = try(module.alb.target_group_arn, "")
-  description = "Target group ARN created by the ALB module"
 }
