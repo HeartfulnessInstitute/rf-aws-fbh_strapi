@@ -29,6 +29,7 @@ ec2_ami ="ami-0f9708d1cd2cfee41"
 #alb#
 alb_name ="fbh-alb"
 target_group_name = "fbh-tg"
+target_port = "80"
 #cloudfront#
 
 # CloudFront Configuration
