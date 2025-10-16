@@ -361,3 +361,43 @@ variable "api_gateway_enable_logs" {
   type        = bool
   default     = true
 }
+
+variable "target_port" {
+  description = "Port on which the app listens (ALB -> EC2)"
+  type        = number
+}
+variable "alb_security_group_id" {
+  description = "Optional ALB security group id to allow traffic from (fallback)"
+  type        = string
+  default     = ""
+}
+
+#Amplify#
+
+variable "github_token" {
+  description = "GitHub personal access token"
+  type        = string
+  sensitive   = true
+}
+
+variable "branch_stage" {
+  description = "Branch stage"
+  type        = string
+  default     = "PRODUCTION"
+  validation {
+    condition     = contains(["PRODUCTION", "STAGING", "DEVELOPMENT"], var.branch_stage)
+    error_message = "Branch stage must be PRODUCTION, STAGING, or DEVELOPMENT."
+  }
+}
+
+variable "react_app_api_url" {
+  description = "React app API URL"
+  type        = string
+  default     = ""
+}
+
+variable "domain_prefix" {
+  description = "Subdomain prefix (optional)"
+  type        = string
+  default     = ""
+}
